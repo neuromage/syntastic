@@ -49,7 +49,9 @@ function! SyntaxCheckers_go_go_GetLocList() dict
     " Test files, i.e. files with a name ending in `_test.go`, are not
     " compiled by `go build`, therefore `go test` must be called for those.
     if match(expand('%'), '\m_test\.go$') == -1
-        let makeprg = 'go build ' . syntastic#c#NullOutput()
+        let makeprg = self.makeprgBuild({
+            \ 'exe': 'go build',
+            \ 'args': syntastic#c#NullOutput() })
     else
         let makeprg = 'go test -c ' . syntastic#c#NullOutput()
     endif
@@ -67,7 +69,6 @@ function! SyntaxCheckers_go_go_GetLocList() dict
     let errors = SyntasticMake({
         \ 'makeprg': makeprg,
         \ 'errorformat': errorformat,
-        \ 'cwd': expand('%:p:h'),
         \ 'defaults': {'type': 'e'} })
 
     return errors
